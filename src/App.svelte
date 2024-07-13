@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Github, Download, Zap, Wrench, Feather, Joystick, ChevronDown } from "lucide-svelte";
+  import { Github, Download, Zap, Wrench, Joystick, ChevronDown, DownloadCloud, Star } from "lucide-svelte";
   import WindowImage from "./assets/window.png";
 
   let version: string = "latest version";
@@ -8,10 +8,13 @@
   let isDropdownOpen = false;
   let isMobile = false;
   let releases: { version: string; arm64: string; x64: string }[] = [];
+  let downloadCount: number = 0;
+  let starCount: number = 0;
 
   onMount(() => {
     animateBackground();
     checkMobile();
+    fetchGitHubStats();
     window.addEventListener("resize", checkMobile);
     document.addEventListener("click", handleClickOutside);
 
@@ -48,19 +51,35 @@
     closeDropdown();
   }
 
-  fetch("https://api.github.com/repos/OrigamingWasTaken/appleblox/releases")
-    .then((res) => res.json())
-    .then((res) => {
-      version = res[0].tag_name;
-      releases = res.map((release: any) => ({
-        version: release.tag_name,
-        arm64: release.assets.find((asset: any) => asset.name.includes("arm64"))?.browser_download_url || downloadLink,
-        x64: release.assets.find((asset: any) => asset.name.includes("x64"))?.browser_download_url || downloadLink,
-      }));
-    })
-    .catch((err) => {
-      console.error("Failed to fetch releases:", err);
-    });
+  function fetchGitHubStats() {
+    fetch("https://api.github.com/repos/OrigamingWasTaken/appleblox")
+      .then((res) => res.json())
+      .then((data) => {
+        starCount = data.stargazers_count;
+      })
+      .catch((err) => {
+        console.error("Failed to fetch repository data:", err);
+      });
+
+    fetch("https://api.github.com/repos/OrigamingWasTaken/appleblox/releases")
+      .then((res) => res.json())
+      .then((res) => {
+        version = res[0].tag_name;
+        releases = res.map((release: any) => ({
+          version: release.tag_name,
+          arm64: release.assets.find((asset: any) => asset.name.includes("arm64"))?.browser_download_url || downloadLink,
+          x64: release.assets.find((asset: any) => asset.name.includes("x64"))?.browser_download_url || downloadLink,
+        }));
+
+        // Sum up the download counts from all releases
+        downloadCount = res.reduce((acc: number, release: any) => {
+          return acc + release.assets.reduce((count: number, asset: any) => count + asset.download_count, 0);
+        }, 0);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch releases:", err);
+      });
+  }
 
   let features = [
     {
@@ -115,8 +134,8 @@
           {#if isDropdownOpen && releases.length > 0}
             <div class="dropdown absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-rose-700 ring-1 ring-black ring-opacity-5 animate-unroll" style="z-index: 9999;">
               <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                <a on:click={() => handleDownloadClick(releases[0].arm64)} class="block px-4 py-2 text-sm text-white hover:bg-rose-700 cursor-pointer" role="menuitem">Download ARM64</a>
-                <a on:click={() => handleDownloadClick(releases[0].x64)} class="block px-4 py-2 text-sm text-white hover:bg-rose-700 cursor-pointer" role="menuitem">Download x64</a>
+                <a on:click={() => handleDownloadClick(releases[0].arm64)} class="block px-4 py-2 text-sm text-white hover:bg-rose-600 cursor-pointer" role="menuitem">Download ARM64</a>
+                <a on:click={() => handleDownloadClick(releases[0].x64)} class="block px-4 py-2 text-sm text-white hover:bg-rose-600 cursor-pointer" role="menuitem">Download x64</a>
               </div>
             </div>
           {/if}
@@ -129,6 +148,16 @@
             <Github class="mr-2" size={20} />
             View on GitHub
           </a>
+        </div>
+        <div class="flex mt-4 space-x-4 text-white">
+          <div class="flex items-center space-x-2">
+            <DownloadCloud size={20} />
+            <span>{downloadCount} Downloads</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <Star size={20} />
+            <span>{starCount} Stars</span>
+          </div>
         </div>
       </div>
       <div class="md:w-1/2 flex justify-center md:justify-end">
