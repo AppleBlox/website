@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Github, Download, Zap, Wrench, Joystick, ChevronDown, DownloadCloud, Star } from "lucide-svelte";
+	import { Github, Download, Zap, Wrench, Joystick, ChevronDown, DownloadCloud, Star, MessageCircle } from "lucide-svelte";
 	import ImageCarousel from "./ImageCarousel.svelte";
 
 	import Image1 from "./assets/carousel/src1.png";
@@ -167,6 +167,10 @@
 					<div class="flex items-center space-x-2">
 						<Star size={20} />
 						<span>{starCount} Stars</span>
+					</div>
+					<div class="flex items-center space-x-2">
+						<MessageCircle size={20} />
+						<a href="/discord.html" class="hover:underline">Join community</a>
 					</div>
 				</div>
 			</div>
