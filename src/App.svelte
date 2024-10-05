@@ -9,7 +9,7 @@
 	import Image4 from "./assets/carousel/src4.png";
 	import Image5 from "./assets/carousel/src5.png";
 
-	let version: string = "latest version";
+	let version: string | null = null;
 	let downloadLink = "https://github.com/OrigamingWasTaken/appleblox/releases/latest";
 	let isDropdownOpen = false;
 	let isMobile = false;
@@ -137,7 +137,7 @@
 						disabled={isMobile}
 					>
 						<Download class="mr-2" size={20} />
-						Download v{version}
+						Download {version ? `v${version}` : 'latest version'}
 						<ChevronDown class="ml-2" size={20} />
 					</button>
 					{#if isDropdownOpen && releases.length > 0}
