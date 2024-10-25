@@ -4,6 +4,11 @@
 	import ImageCarousel from "./ImageCarousel.svelte";
 	import gsap from "gsap";
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
+	import Image1 from "./assets/carousel/src1.png";
+	import Image2 from "./assets/carousel/src2.png";
+	import Image3 from "./assets/carousel/src3.png";
+	import Image4 from "./assets/carousel/src4.png";
+	import Image5 from "./assets/carousel/src5.png";
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -19,13 +24,6 @@
 		title: string;
 		description: string;
 	};
-
-	// Imports
-	import Image1 from "./assets/carousel/src1.png";
-	import Image2 from "./assets/carousel/src2.png";
-	import Image3 from "./assets/carousel/src3.png";
-	import Image4 from "./assets/carousel/src4.png";
-	import Image5 from "./assets/carousel/src5.png";
 
 	// State
 	let version: string | null = null;
@@ -48,13 +46,13 @@
 		},
 		{
 			icon: Wrench,
-			title: "Smart Integration",
+			title: "Integrations",
 			description: "See your game server region, share your activity on Discord, and run multiple game instances simultaneously.",
 		},
 		{
 			icon: Joystick,
 			title: "Customization",
-			description: "Personalize your experience with custom UI mods, game-specific FastFlags, and community-created content.",
+			description: "Personalize your experience with custom UI mods, game-specific FastFlags, and community-created assets.",
 		},
 	];
 
