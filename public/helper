@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Color definitions
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Icons (emojis)
+CHECK_MARK="✅"
+CROSS_MARK="❌"
+SEARCH_ICON="🔍"
+SHIELD_ICON="🛡️"
+SPARKLES="✨"
+ROCKET="🚀"
+
+# Print header
+echo -e "\n${PURPLE}${SPARKLES} AppleBlox Unquarantine Tool ${SPARKLES}${NC}\n"
+
+# Function to print status messages
+print_status() {
+    echo -e "${BLUE}${SEARCH_ICON} $1${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}${CHECK_MARK} $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}${CROSS_MARK} $1${NC}"
+}
+
+# Function to launch the app
+launch_app() {
+    print_status "Launching AppleBlox..."
+    if open "$1"; then
+        print_success "AppleBlox launched successfully!"
+    else
+        print_error "Failed to launch AppleBlox"
+        exit 1
+    fi
+}
+
+# Look for AppleBlox in common locations
+print_status "Searching for AppleBlox installation..."
+
+LOCATIONS=(
+    "/Applications/AppleBlox.app"
+    "$HOME/Applications/AppleBlox.app"
+)
+
+APP_PATH=""
+for loc in "${LOCATIONS[@]}"; do
+    if [ -d "$loc" ]; then
+        APP_PATH="$loc"
+        break
+    fi
+done
+
+if [ -z "$APP_PATH" ]; then
+    print_error "AppleBlox not found in common locations"
+    exit 1
+fi
+
+# Verify bundle ID
+print_status "Verifying bundle identifier..."
+BUNDLE_ID=$(mdls -name kMDItemCFBundleIdentifier -r "$APP_PATH" 2>/dev/null)
+
+if [ "$BUNDLE_ID" != "ch.origaming.appleblox" ]; then
+    print_error "Bundle ID mismatch or couldn't be verified"
+    print_error "Expected: ch.origaming.appleblox"
+    print_error "Found: $BUNDLE_ID"
+    exit 1
+fi
+
+# Remove quarantine attribute
+print_status "Removing quarantine attribute..."
+if xattr -cr "$APP_PATH" 2>/dev/null; then
+    print_success "Quarantine attribute removed successfully!"
+    echo -e "\n${CYAN}${SHIELD_ICON} AppleBlox is now ready to use${NC}"
+    
+    # Launch the app
+    echo -e "\n${CYAN}${ROCKET} Starting AppleBlox...${NC}"
+    launch_app "$APP_PATH"
+else
+    print_error "Failed to remove quarantine attribute"
+    echo -e "\n${YELLOW}Try running the script with sudo:${NC}"
+    echo -e "sudo $0"
+    exit 1
+fi
+
+echo -e "\n${GREEN}${SPARKLES} All done! ${SPARKLES}${NC}\n"
