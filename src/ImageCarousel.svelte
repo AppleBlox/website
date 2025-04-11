@@ -6,8 +6,8 @@
 
   export let images: string[] = [];
   let currentIndex: number = 0;
-  let carouselElement: HTMLElement;
   let interval: ReturnType<typeof setInterval>;
+  let carouselElement: HTMLElement;
   let dotsContainer: HTMLElement;
 
   const offset = tweened<number>(0, {
@@ -90,16 +90,30 @@
   <div bind:this={carouselElement} class="carousel">
     {#each images as image, i}
       <div class="slide" class:active={i === currentIndex}>
-        <img src={image} alt={`AppleBlox Preview ${i + 1}`} />
+        <img src={image} alt={`AppleBlox Preview ${i + 1}`} loading="lazy" />
       </div>
     {/each}
   </div>
+  
+  <button class="nav-button prev" on:click={prevSlide} aria-label="Previous slide">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+  
+  <button class="nav-button next" on:click={nextSlide} aria-label="Next slide">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
+  
   <div bind:this={dotsContainer} class="dots-container">
     {#each images as _, i}
       <button
         class="dot"
         class:active={i === currentIndex}
         on:click={() => updateSlide(i)}
+        aria-label={`Go to slide ${i + 1}`}
       />
     {/each}
   </div>
@@ -111,7 +125,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: 4px;
+    border-radius: 8px;
   }
 
   .carousel {
@@ -129,7 +143,7 @@
     justify-content: center;
     opacity: 0.5;
     transition: opacity 0.5s ease-out;
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .slide.active {
@@ -150,14 +164,14 @@
     background: rgba(255, 255, 255, 0.15);
     color: white;
     border: none;
-    border-radius: 4px;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 3;
+    z-index: 10;
     backdrop-filter: blur(4px);
   }
 
@@ -171,12 +185,12 @@
 
   .dots-container {
     position: absolute;
-    bottom: 1rem;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 0.5rem;
-    z-index: 3;
+    gap: 5px;
+    z-index: 10;
   }
 
   .dot {
@@ -187,19 +201,31 @@
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    padding: 0;
   }
 
   .dot.active {
-    width: 24px;
+    width: 20px;
     background: rgba(255, 255, 255, 0.9);
   }
 
-  .gradient-overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 25%;
-    z-index: 2;
-    pointer-events: none;
+  @media (max-width: 640px) {
+    .nav-button {
+      width: 32px;
+      height: 32px;
+    }
+
+    .dots-container {
+      bottom: 8px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+    }
+    
+    .dot.active {
+      width: 16px;
+    }
   }
 </style>
