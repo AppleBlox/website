@@ -71,7 +71,6 @@ export function isAppleSilicon() {
     result = /Mac/.test(userAgent) && /arm64|aarch64/i.test(userAgent);
     console.log('Falling back to userAgent check: ' + result);
   }
-
   return result;
 }
 
