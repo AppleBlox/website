@@ -40,17 +40,17 @@
 		{
 			icon: Zap,
 			title: "Light & Fast",
-			description: "Weighting around 6MB and built with semi-native technologies, we make sure AppleBlox will not negatively impact your performance.",
+			description: "Weighting around 6MB and built with semi-native technologies, AppleBlox won't impact your performance.",
 		},
 		{
 			icon: Wrench,
 			title: "Integrations",
-			description: "See your game server region, share your activity on Discord, and run multiple game instances simultaneously.",
+			description: "Be notified your game server region, share your activity on Discord, and run multiple game instances simultaneously.",
 		},
 		{
 			icon: Joystick,
 			title: "Customization",
-			description: "Personalize your experience community-created Roblox mods and AppleBlox themes. Fast Flags are also supported.",
+			description: "Customize your experience using community-created Roblox mods and app themes. Fast Flags are also supported.",
 		},
 	];
 
