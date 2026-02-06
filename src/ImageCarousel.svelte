@@ -1,18 +1,16 @@
 <script lang="ts">
   import { onMount, afterUpdate } from 'svelte';
   import { tweened } from 'svelte/motion';
-  import { elasticOut } from 'svelte/easing';
-  import gsap from 'gsap';
+  import { cubicOut } from 'svelte/easing';
 
   export let images: string[] = [];
   let currentIndex: number = 0;
   let interval: ReturnType<typeof setInterval>;
   let carouselElement: HTMLElement;
-  let dotsContainer: HTMLElement;
 
   const offset = tweened<number>(0, {
-    duration: 200,
-    easing: elasticOut
+    duration: 400,
+    easing: cubicOut
   });
 
   $: offset.set(-currentIndex * 100);
@@ -21,23 +19,6 @@
     currentIndex = (newIndex + images.length) % images.length;
     offset.set(-currentIndex * 100);
     resetInterval();
-    updateDots();
-  }
-
-  function updateDots() {
-    const dots = dotsContainer?.children;
-    if (dots) {
-      gsap.to(dots, {
-        scale: 0.8,
-        opacity: 0.5,
-        duration: 0.3
-      });
-      gsap.to(dots[currentIndex], {
-        scale: 1,
-        opacity: 1,
-        duration: 0.3
-      });
-    }
   }
 
   function nextSlide(): void {
@@ -55,27 +36,6 @@
 
   onMount((): () => void => {
     interval = setInterval(nextSlide, 5000);
-    updateDots();
-    
-    // Animate navigation buttons on hover
-    const buttons = document.querySelectorAll('.nav-button');
-    buttons.forEach(button => {
-      button.addEventListener('mouseenter', (e) => {
-        gsap.to(e.currentTarget, {
-          scale: 1.1,
-          backgroundColor: 'rgba(255, 255, 255, 0.3)',
-          duration: 0.3
-        });
-      });
-      button.addEventListener('mouseleave', (e) => {
-        gsap.to(e.currentTarget, {
-          scale: 1,
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
-          duration: 0.3
-        });
-      });
-    });
-
     return (): void => clearInterval(interval);
   });
 
@@ -94,20 +54,20 @@
       </div>
     {/each}
   </div>
-  
+
   <button class="nav-button prev" on:click={prevSlide} aria-label="Previous slide">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6"/>
     </svg>
   </button>
-  
+
   <button class="nav-button next" on:click={nextSlide} aria-label="Next slide">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M9 18l6-6-6-6"/>
     </svg>
   </button>
-  
-  <div bind:this={dotsContainer} class="dots-container">
+
+  <div class="dots-container">
     {#each images as _, i}
       <button
         class="dot"
@@ -132,7 +92,6 @@
     display: flex;
     width: 100%;
     height: 100%;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .slide {
@@ -142,7 +101,7 @@
     align-items: center;
     justify-content: center;
     opacity: 0.5;
-    transition: opacity 0.5s ease-out;
+    transition: opacity 0.4s ease-out;
     padding: 0.5rem;
   }
 
@@ -173,6 +132,12 @@
     cursor: pointer;
     z-index: 10;
     backdrop-filter: blur(4px);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .nav-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
   }
 
   .prev {
@@ -197,16 +162,20 @@
     width: 8px;
     height: 8px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.4);
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 0;
+    transform: scale(0.85);
+    opacity: 0.6;
   }
 
   .dot.active {
     width: 20px;
     background: rgba(255, 255, 255, 0.9);
+    transform: scale(1);
+    opacity: 1;
   }
 
   @media (max-width: 640px) {
@@ -223,7 +192,7 @@
       width: 6px;
       height: 6px;
     }
-    
+
     .dot.active {
       width: 16px;
     }

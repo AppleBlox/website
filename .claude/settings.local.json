@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(file:*)",
+      "Bash(identify:*)",
+      "Bash(grep:*)",
+      "Bash(for f in /Users/marlon/Javascript/AppleBlox/website/src/assets/carousel/src1.png /Users/marlon/Javascript/AppleBlox/website/src/assets/carousel/src2.png /Users/marlon/Javascript/AppleBlox/website/src/assets/carousel/src3.png /Users/marlon/Javascript/AppleBlox/website/src/assets/carousel/src4.png /Users/marlon/Javascript/AppleBlox/website/src/assets/carousel/src5.png)",
+      "Bash(do /opt/homebrew/bin/cwebp -q 85 \"$f\" -o \"$f%.png.webp\")",
+      "Bash(done)",
+      "Bash(bun remove:*)",
+      "Bash(bun run build:*)"
+    ]
+  }
+}

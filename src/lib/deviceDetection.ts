@@ -36,40 +36,23 @@ export function isAppleSilicon() {
   let result = false;
   try {
     const canvas = document.createElement('canvas');
-    console.log('Canvas element created.');
-
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) {
-      console.log('WebGL not supported.');
-    } else {
-      console.log('WebGL context initialized.');
-
+    if (gl) {
       // @ts-expect-error: Exists
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-      if (!debugInfo) {
-        console.log('WEBGL_debug_renderer_info extension not supported.');
-      } else {
-        console.log('WEBGL_debug_renderer_info extension available.');
+      if (debugInfo) {
         // @ts-expect-error: Exists
         const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        console.log('Renderer string: ' + renderer);
-
         result = /Apple M/i.test(renderer);
-        console.log('Apple M GPU detected: ' + result);
-
-        if (result) {
-          console.log("WebGL says it is an Apple Silicon");
-        }
       }
     }
-  } catch (e) {
-    console.log('Error during WebGL detection: ' + e);
+  } catch {
+    // WebGL detection failed, fall back to userAgent
   }
 
   if (!result) {
     const userAgent = navigator.userAgent;
     result = /Mac/.test(userAgent) && /arm64|aarch64/i.test(userAgent);
-    console.log('Falling back to userAgent check: ' + result);
   }
   return result;
 }

@@ -43,9 +43,7 @@
 		const isMac = /Mac/.test(userAgent);
 
 		if (isMac) {
-			// Check for "arm64" in the user agent
 			isAS = isAppleSilicon();
-			console.log(`Is Apple Sillicion: ${isAS}`);
 		}
 	});
 </script>
@@ -55,6 +53,7 @@
 {#if show}
 	<div class="fixed inset-0 z-50 flex items-center justify-center" transition:fade={{ duration: 200 }}>
 		<!-- Backdrop -->
+		<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 		<div class="absolute inset-0 bg-black/70 backdrop-blur-sm" on:click={closeModal}></div>
 
 		<!-- Modal -->
