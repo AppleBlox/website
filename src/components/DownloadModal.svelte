@@ -27,12 +27,7 @@
 	}
 
 	function downloadVersion(url: string) {
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = "";
-		document.body.appendChild(a);
-		a.click();
-		a.remove();
+		window.open(url, "_blank");
 		step = "check";
 	}
 
@@ -71,7 +66,8 @@
 		<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 		<div class="absolute inset-0 bg-black/70 backdrop-blur-sm" on:click={closeModal}></div>
 
-		<div class="modal-content relative w-full max-w-md rounded-xl bg-neutral-900 border border-neutral-800 p-6 shadow-xl" transition:fly={{ y: 20, duration: 200 }}>
+		<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+		<div class="modal-content relative w-full max-w-md rounded-xl bg-neutral-900 border border-neutral-800 p-6 shadow-xl" transition:fly={{ y: 20, duration: 200 }} on:click|stopPropagation>
 			<button class="absolute right-4 top-4 rounded-full p-1 text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors" on:click={closeModal}>
 				<X size={18} />
 			</button>

@@ -86,6 +86,7 @@
 
 	function handleClickOutside(event: MouseEvent) {
 		const target = event.target as HTMLElement;
+		if (!target.isConnected) return;
 		if (showDownloadModal && !target.closest(".modal-content") && !target.closest(".download-btn")) {
 			showDownloadModal = false;
 		}
