@@ -39,6 +39,26 @@ launch_app() {
     fi
 }
 
+DMG_PATH=""
+for dmg in "$HOME/Downloads"/AppleBlox-*.dmg "$HOME/Desktop"/AppleBlox-*.dmg; do
+    if [ -f "$dmg" ]; then
+        DMG_PATH="$dmg"
+        break
+    fi
+done
+
+if [ -n "$DMG_PATH" ]; then
+    print_status "Found installer image: $(basename "$DMG_PATH")"
+    print_status "Removing quarantine from installer image..."
+    if xattr -cr "$DMG_PATH" 2>/dev/null; then
+        print_success "Installer image unquarantined!"
+        echo -e "\n${CYAN}${SHIELD_ICON} You can now open the DMG, then double-click the PKG inside to install AppleBlox.${NC}\n"
+    else
+        print_error "Failed to remove quarantine from installer image"
+        echo -e "${YELLOW}Try: sudo xattr -cr \"$DMG_PATH\"${NC}"
+    fi
+fi
+
 PKG_PATH=""
 for pkg in "$HOME/Downloads"/AppleBlox-*.pkg "$HOME/Desktop"/AppleBlox-*.pkg; do
     if [ -f "$pkg" ]; then
@@ -46,6 +66,10 @@ for pkg in "$HOME/Downloads"/AppleBlox-*.pkg "$HOME/Desktop"/AppleBlox-*.pkg; do
         break
     fi
 done
+
+if [ -z "$PKG_PATH" ] && [ -f "/Volumes/AppleBlox/Install AppleBlox.pkg" ]; then
+    PKG_PATH="/Volumes/AppleBlox/Install AppleBlox.pkg"
+fi
 
 if [ -n "$PKG_PATH" ]; then
     print_status "Found installer: $(basename "$PKG_PATH")"
@@ -76,7 +100,7 @@ for loc in "${LOCATIONS[@]}"; do
 done
 
 if [ -z "$APP_PATH" ]; then
-    if [ -n "$PKG_PATH" ]; then
+    if [ -n "$PKG_PATH" ] || [ -n "$DMG_PATH" ]; then
         echo -e "${CYAN}Install AppleBlox using the PKG installer, then run this script again to launch it.${NC}\n"
         exit 0
     fi
