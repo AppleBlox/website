@@ -137,6 +137,9 @@
 
 </script>
 
+<svelte:head>
+	<script defer src="https://cloud.umami.is/script.js" data-website-id="0b387dde-91a8-4a8a-ad23-43e6f03cc568"></script>
+</svelte:head>
 <main class="min-h-[100dvh] w-full flex items-center justify-center bg-dark overflow-x-hidden">
 	<div class="container mx-auto px-6 py-8 relative z-10">
 		<!-- Hero Section -->
