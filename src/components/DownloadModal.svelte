@@ -3,6 +3,7 @@
 	import { fade, fly } from "svelte/transition";
 	import { X, Cpu, ArrowRight, ArrowLeft, CheckCircle, AlertTriangle, Terminal, Settings, Copy, Check } from "lucide-svelte";
 	import { isAppleSilicon } from "../lib/deviceDetection";
+	import { trackDownload, type Arch } from "../lib/analytics";
 
 	export let show = false;
 	export let arm64Url = "";
@@ -26,7 +27,8 @@
 		setTimeout(() => { step = "arch"; copied = false; }, 300);
 	}
 
-	function downloadVersion(url: string) {
+	function downloadVersion(url: string, arch: Arch) {
+		trackDownload(arch, version);
 		window.open(url, "_blank");
 		step = "check";
 	}
@@ -83,7 +85,7 @@
 						class="w-full flex items-center justify-between p-4 rounded-lg border
 						{isAS ? 'border-primary/50 bg-primary/5' : 'border-neutral-800 bg-neutral-800/50'}
 						hover:bg-neutral-800 transition-colors text-left group"
-						on:click={() => downloadVersion(arm64Url)}
+						on:click={() => downloadVersion(arm64Url, "arm64")}
 					>
 						<div class="flex items-center">
 							<div class="rounded-full bg-primary/10 p-2 mr-3">
@@ -101,7 +103,7 @@
 						class="w-full flex items-center justify-between p-4 rounded-lg border
 						{!isAS ? 'border-primary/50 bg-primary/5' : 'border-neutral-800 bg-neutral-800/50'}
 						hover:bg-neutral-800 transition-colors text-left group"
-						on:click={() => downloadVersion(x64Url)}
+						on:click={() => downloadVersion(x64Url, "x64")}
 					>
 						<div class="flex items-center">
 							<div class="rounded-full bg-primary/10 p-2 mr-3">
